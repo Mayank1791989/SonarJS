@@ -44,7 +44,7 @@ export const rule: Rule.RuleModule = {
         const groupedTypes: Map<string, Array<TSESTree.Node>> = new Map();
 
         compositeType.types.forEach(typescriptType => {
-          const nodeValue = sourceCode.getText(typescriptType as estree.Node);
+          const nodeValue = sourceCode.getText((typescriptType as unknown) as estree.Node);
           const nodesWithGivenType = groupedTypes.get(nodeValue);
           const nodeType = typescriptType as TSESTree.Node;
           if (!nodesWithGivenType) {

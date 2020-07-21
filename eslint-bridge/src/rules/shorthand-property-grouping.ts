@@ -23,6 +23,7 @@ import { Rule } from 'eslint';
 import * as estree from 'estree';
 import { toEncodedMessage } from './utils';
 import { TSESTree } from '@typescript-eslint/experimental-utils';
+import { Property } from 'estree';
 
 export const rule: Rule.RuleModule = {
   meta: {
@@ -45,7 +46,7 @@ export const rule: Rule.RuleModule = {
       const secondaryMessages = [];
 
       for (let i = begin; i < end; i++) {
-        const prop = properties[i];
+        const prop = properties[i] as Property;
         if (prop.shorthand) {
           secondaryNodes.push(prop);
           secondaryMessages.push(`Move to ${positionMessage}`);
@@ -70,7 +71,9 @@ export const rule: Rule.RuleModule = {
         if (objectExpressionProperties.some(p => p.type !== 'Property')) {
           return;
         }
-        const isShorthandPropertyList = objectExpressionProperties.map(p => p.shorthand);
+        const isShorthandPropertyList = objectExpressionProperties.map(
+          p => (p as Property).shorthand,
+        );
         const shorthandPropertiesNumber = isShorthandPropertyList.filter(b => b).length;
 
         const numberOfShorthandAtBeginning = getNumberOfTrueAtBeginning(isShorthandPropertyList);

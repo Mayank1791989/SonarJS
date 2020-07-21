@@ -26,6 +26,7 @@ import {
   getModuleNameOfImportedIdentifier,
   isIdentifier,
 } from './utils';
+import { Property } from 'estree';
 
 const EXEC_FUNCTIONS = ['exec', 'execSync'];
 
@@ -91,7 +92,7 @@ function containsShellOption(otherArguments: Argument[]) {
   return otherArguments.some(
     arg =>
       arg.type === 'ObjectExpression' &&
-      arg.properties.some(
+      (arg.properties as Property[]).some(
         ({ key, value }) =>
           isIdentifier(key, 'shell') && value.type === 'Literal' && value.value === true,
       ),

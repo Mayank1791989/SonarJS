@@ -21,6 +21,7 @@
 
 import { Rule } from 'eslint';
 import * as estree from 'estree';
+import { AssignmentProperty } from 'estree';
 
 const illegalNames = ['eval', 'arguments', 'undefined', 'NaN', 'Infinity'];
 
@@ -90,7 +91,7 @@ function reportBadUsage(
         break;
       case 'ObjectPattern':
         node.properties.forEach(prop => {
-          reportBadUsage(prop.value, buildMessage, context);
+          reportBadUsage((prop as AssignmentProperty).value, buildMessage, context);
         });
         break;
       case 'ArrayPattern':
