@@ -73,6 +73,9 @@ abstract class AbstractEslintSensor implements Sensor {
   final Rule[] rules;
   final JavaScriptChecks checks;
 
+  long totalParsingMs;
+  long totalAnalysisMs;
+
   // parsingErrorRuleKey equals null if ParsingErrorCheck is not activated
   private RuleKey parsingErrorRuleKey = null;
 
@@ -196,6 +199,14 @@ abstract class AbstractEslintSensor implements Sensor {
     saveHighlights(file, response.highlights);
     saveHighlightedSymbols(file, response.highlightedSymbols);
     saveCpd(file, response.cpdTokens);
+    totalParsingMs += response.parsingTime[1] / 1_000_000;
+    totalAnalysisMs += response.analysisTime[1] / 1_000_000;
+    LOG.debug("{} parsing: {} analysis: {}", file, response.parsingTime, response.analysisTime);
+  }
+
+  void resetTimes() {
+    totalParsingMs = 0;
+    totalAnalysisMs = 0;
   }
 
   private void saveIssues(InputFile file, Issue[] issues) {

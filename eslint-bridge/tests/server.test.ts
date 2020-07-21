@@ -197,8 +197,10 @@ describe('server', () => {
       }),
       '/analyze-js',
     );
-
-    expect(JSON.parse(response)).toEqual(expectedResponse);
+    const responseJson = JSON.parse(response);
+    delete responseJson.analysisTime;
+    delete responseJson.parsingTime;
+    expect(responseJson).toEqual(expectedResponse);
   });
 
   it('should respond to TypeScript analysis request', async () => {
@@ -218,8 +220,10 @@ describe('server', () => {
       }),
       '/analyze-ts',
     );
-
-    expect(JSON.parse(response)).toEqual(expectedResponse);
+    const responseJson = JSON.parse(response);
+    delete responseJson.analysisTime;
+    delete responseJson.parsingTime;
+    expect(responseJson).toEqual(expectedResponse);
   }, 10_000);
 
   it('should respond OK! when started', done => {

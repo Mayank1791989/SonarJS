@@ -85,6 +85,8 @@ public interface EslintBridgeServer extends Startable {
     HighlightedSymbol[] highlightedSymbols = {};
     Metrics metrics = new Metrics();
     CpdToken[] cpdTokens = {};
+    long[] parsingTime;
+    long[] analysisTime;
   }
 
   class ParsingError {

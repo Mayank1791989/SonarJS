@@ -98,6 +98,7 @@ public class JavaScriptEslintBasedSensor extends AbstractEslintSensor {
         }
       }
       success = true;
+      LOG.info("Total parsing time: {}ms, analysis time: {}ms", totalParsingMs, totalAnalysisMs);
     } finally {
       if (success) {
         progressReport.stop();

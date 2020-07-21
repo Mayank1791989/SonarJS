@@ -81,6 +81,8 @@ export interface AnalysisResponse {
   highlightedSymbols: HighlightedSymbol[];
   metrics: Metrics;
   cpdTokens: CpdToken[];
+  parsingTime?: [number, number];
+  analysisTime?: [number, number];
 }
 
 export interface ParsingError {
@@ -136,9 +138,14 @@ function analyze(input: AnalysisInput, parse: Parse): AnalysisResponse {
   if (!fileContent) {
     fileContent = getFileContent(input.filePath);
   }
+  const start = process.hrtime();
   const result = parse(fileContent, input.filePath, input.tsConfigs);
+  const parsingTime = process.hrtime(start);
   if (result instanceof SourceCode) {
-    return analyzeFile(result, input);
+    const start = process.hrtime();
+    const analysis = analyzeFile(result, input);
+    const analysisTime = process.hrtime(start);
+    return { ...analysis, parsingTime, analysisTime };
   } else {
     return {
       ...EMPTY_RESPONSE,
