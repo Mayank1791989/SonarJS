@@ -48,6 +48,9 @@ const linter = new Linter();
 linter.defineRules(sonarjsRules);
 linter.defineRules(internalRules);
 
+let linterConfig: Linter.Config;
+let rules: Map<string, ESLintRule.RuleModule>;
+
 const NO_UNUSED_EXPRESSIONS = 'no-unused-expressions';
 
 // core implementation of this rule raises FPs on chai framework
@@ -80,12 +83,16 @@ export function analyze(
   inputRules: Rule[],
   ...additionalRules: AdditionalRule[]
 ) {
-  additionalRules.forEach(additionalRule =>
-    linter.defineRule(additionalRule.ruleId, additionalRule.ruleModule),
-  );
+  if (!linterConfig) {
+    additionalRules.forEach(additionalRule =>
+      linter.defineRule(additionalRule.ruleId, additionalRule.ruleModule),
+    );
+    rules = linter.getRules();
+    linterConfig = createLinterConfig(inputRules, additionalRules);
+  }
 
   const issues = linter
-    .verify(sourceCode, createLinterConfig(inputRules, additionalRules), {
+    .verify(sourceCode, linterConfig, {
       filename: filePath,
       allowInlineConfig: false,
     })
@@ -94,7 +101,7 @@ export function analyze(
       if (!issue) {
         return null;
       }
-      return decodeSonarRuntimeIssue(linter.getRules().get(issue.ruleId), issue);
+      return decodeSonarRuntimeIssue(rules.get(issue.ruleId), issue);
     })
     .filter((issue): issue is Issue => issue !== null)
     .map(normalizeIssueLocation);
@@ -149,7 +156,7 @@ function createLinterConfig(
     parserOptions: { sourceType: 'module', ecmaVersion: 2018 },
   };
   inputRules.forEach(inputRule => {
-    const ruleModule = linter.getRules().get(inputRule.key);
+    const ruleModule = rules.get(inputRule.key);
     ruleConfig.rules![inputRule.key] = ['error', ...getRuleConfig(ruleModule, inputRule)];
   });
 

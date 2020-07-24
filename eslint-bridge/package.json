@@ -24,6 +24,7 @@
     "node": ">=6"
   },
   "devDependencies": {
+    "0x": "^4.9.1",
     "@types/eslint": "7.2.0",
     "@types/eslint-scope": "3.7.0",
     "@types/esprima": "4.0.2",

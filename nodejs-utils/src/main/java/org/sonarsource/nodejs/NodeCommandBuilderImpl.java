@@ -141,7 +141,7 @@ class NodeCommandBuilderImpl implements NodeCommandBuilder {
   @Override
   public NodeCommand build() throws NodeCommandException, IOException {
     String nodeExecutable = retrieveNodeExecutableFromConfig(configuration);
-    checkNodeCompatibility(nodeExecutable);
+//    checkNodeCompatibility(nodeExecutable);
 
     if (nodeJsArgs.isEmpty() && scriptFilename == null && args.isEmpty()) {
       throw new IllegalArgumentException("Missing arguments for Node.js.");
